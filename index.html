@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nosso Outro Mundo</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-white w-screen h-screen">
+
+
+    <audio id="bg-music" src="Exploration - Bruno Coulais.mp3" loop></audio>
+
+    <canvas id="cursor-canvas"></canvas>
+
+    <!-- ================= INTRO WORLD ================= -->
+    <div id="intro-world" class="fixed inset-0 flex flex-col items-center justify-center z-50">
+        <div class="absolute inset-0 wall-texture"></div>
+        
+        <div class="relative z-10 text-center flex flex-col items-center w-full h-full justify-center">
+            <h1 class="font-title text-4xl mb-4 text-gray-500 drop-shadow-lg tracking-widest">O Mundo Real</h1>
+            <p class="text-sm text-gray-600 mb-16 max-w-sm italic">Tudo parece cinza e sem vida... até você destrancar a porta.</p>
+
+            <div class="relative w-[300px] h-[300px] flex items-end justify-center border-b-4 border-gray-900 pb-1">
+                <div id="the-door" class="small-door flex items-center justify-end">
+                    <div id="keyhole" class="keyhole"></div>
+                </div>
+            </div>
+            
+            <div id="draggable-key" class="key-draggable" style="transform: translate(0px, 0px);">
+                🗝️
+            </div>
+            
+            <p class="text-xs text-gray-700 mt-8 font-bold uppercase tracking-wider absolute bottom-12">
+                <i class="fa-solid fa-hand-pointer mr-1"></i> Arraste a chave até a fechadura
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= MAGICAL WORLD ================= -->
+    <div id="magical-world" class="fixed inset-0 flex flex-col items-center justify-start overflow-hidden">
+        
+        <!-- Cabeçalho UI (Volume e Botão da Pedra) -->
+        <header class="w-full flex justify-between items-start p-6 lg:px-12 z-40 relative pointer-events-none">
+            
+            <!-- Controle de Volume -->
+            <div id="volume-control-ui" class="pointer-events-auto flex items-center gap-3 bg-[#0b0b10]/80 border border-[#e0527c]/40 px-4 py-2 rounded-full backdrop-blur-md opacity-0 transition-opacity duration-1000 shadow-[0_0_15px_rgba(0,0,0,0.8)]">
+                <button id="btn-mute" class="text-gray-300 hover:text-[#e0527c] transition-colors w-6 text-center cursor-none">
+                    <i class="fa-solid fa-volume-high" id="volume-icon"></i>
+                </button>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" class="w-20 lg:w-28 accent-[#e0527c] cursor-none">
+            </div>
+
+            <!-- Logo Central -->
+            <div class="font-serif-elegant text-xl tracking-widest text-gray-300 flex items-center gap-2 pointer-events-auto absolute left-1/2 transform -translate-x-1/2">
+                <span class="text-[#e0527c] text-2xl">♥</span> M & E
+            </div>
+            
+            <!-- Botão Pedra da Visão -->
+            <div class="pointer-events-auto">
+                <button id="btn-stone" class="bg-teal-900/90 border-2 border-teal-500 text-teal-300 px-5 py-2.5 rounded-full text-sm hover:bg-teal-800 transition-all shadow-[0_0_20px_rgba(20,184,166,0.4)] flex items-center gap-2 font-bold tracking-wide cursor-none">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Pedra da Visão</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Títulos -->
+        <main class="w-full max-w-4xl flex flex-col items-center justify-start z-10 relative mt-2 pointer-events-none">
+            <h1 class="font-serif-elegant text-4xl md:text-5xl lg:text-6xl text-[#e0527c] text-center leading-[1.1] tracking-wide mb-6 drop-shadow-[0_0_15px_rgba(224,82,124,0.4)]">
+                MARIA EDUARDA,<br>
+                COM VOCÊ NÃO PRECISO DE OUTRO MUNDO<br>
+            </h1>
+
+            <p class="font-serif-elegant italic text-gray-300 text-center max-w-xl text-lg px-4 mb-2">
+                "Quando estou com você, não preciso de botões nos olhos para imaginar um mundo perfeito, afinal, ao te ver, já estou diante da personificação dele."
+            </p>
+        </main>
+
+        <!-- Coraline 3D -->
+        <div class="relative z-20 text-center flex-1 flex flex-col justify-center pb-12 pointer-events-auto w-full">
+            <p class="text-xs text-[#e0527c] mb-6 opacity-60 uppercase tracking-widest font-bold">
+                <i class="fa-solid fa-arrows-left-right mr-2"></i> Arraste para girar
+            </p>
+            
+            <div class="scene3d">
+                <div id="coraline-wrapper" class="coraline-wrapper">
+                    <img src="https://www.datocms-assets.com/153672/1750186088-coraline_0091.png" 
+                         alt="Coraline" 
+                         draggable="false" 
+                         class="coraline-img select-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- UI da Pedra da Visão -->
+        <div id="stone-ui" class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50 text-center hidden">
+            <div class="bg-black/90 border border-teal-500/50 px-8 py-3 rounded-full backdrop-blur-md shadow-[0_0_30px_rgba(0,0,0,0.9)] flex items-center gap-4">
+                <p class="text-teal-400 text-xs font-bold tracking-[0.2em] uppercase">Almas</p>
+                <div class="text-3xl font-title text-white"><span id="eye-count">0</span>/3</div>
+            </div>
+        </div>
+        
+        <div id="seeing-stone-overlay"></div>
+        <div id="eyes-container"></div>
+    </div>
+
+    <!-- ================= ROMANTIC MODAL ================= -->
+    <div id="romantic-modal" class="fixed inset-0 bg-[#07030d]/95 z-[100] flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-1000 backdrop-blur-sm">
+        <div class="bg-gradient-to-b from-[#1e0b3b] to-[#07030d] p-12 rounded-[40px] border border-[#e0527c]/40 shadow-[0_0_80px_rgba(224,82,124,0.3)] max-w-xl text-center transform scale-95 transition-transform duration-1000" id="modal-content">
+            <div class="text-6xl text-[#e0527c] mb-6 drop-shadow-[0_0_20px_rgba(224,82,124,0.6)] animate-pulse">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+            <h2 class="font-serif-elegant text-3xl text-gray-200 mb-6 tracking-wide">Você encontrou todos os olhos!</h2>
+            <p class="text-lg text-gray-400 leading-relaxed font-light italic mb-8">
+                "Enfim, assim como Coraline libertou as almas daquelas crianças, a cada dia você consegue me libertar mais e mais do meu mundo, que parecia tão escuro, tão sozinho, tão sem cor. Com você, sinto que o sentido da vida é só o amor. 'Vivendo sigo, sofrendo vivo' costumava pensar assim, mas te conhecer me fez menos um desiludido, alguém que, mesmo em face do maior encanto, se encanta mais e mais com o seu sorriso. Obrigado por ser você, ó garota dos cabelos negros e pensamentos ambíguos."
+            </p>
+            <p class="font-serif-elegant text-3xl text-[#e0527c] drop-shadow-[0_0_15px_rgba(224,82,124,0.4)]">
+                Se for para amar alguém de novo, eu quero que seja você, Maria Eduarda!
+            </p>
+            <button onclick="closeModal()" class="mt-10 px-8 py-3 border-2 border-gray-600 rounded-full text-xs font-bold tracking-widest text-gray-300 hover:bg-gray-800 hover:border-gray-400 transition-all uppercase cursor-none">
+                Voltar
+            </button>
+        </div>
+    </div>
+
+    <script>
+        /* ================= WEB AUDIO API: SFX COMEMORAÇÃO ================= */
+        let audioCtx;
+        
+        function initAudioAPI() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Síntese de um acorde mágico (Cmaj7 Arpeggio)
+        function playCelebrationSound() {
+            if (!audioCtx) initAudioAPI();
+            
+            const notes = [1046.50, 1318.51, 1567.98, 1975.53]; // C6, E6, G6, B6
+            const now = audioCtx.currentTime;
+
+            notes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                const startTime = now + i * 0.12;
+                osc.start(startTime);
+                
+                // Envelope sonoro (Ataque rápido, decay suave)
+                gainNode.gain.setValueAtTime(0, startTime);
+                gainNode.gain.linearRampToValueAtTime(0.15, startTime + 0.03);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + 0.8);
+                
+                osc.stop(startTime + 0.8);
+            });
+        }
+
+        /* ================= CONTROLE DE VOLUME (MÚSICA DE FUNDO) ================= */
+        const bgAudio = document.getElementById('bg-music');
+        const volumeUI = document.getElementById('volume-control-ui');
+        const volumeSlider = document.getElementById('volume-slider');
+        const btnMute = document.getElementById('btn-mute');
+        const volumeIcon = document.getElementById('volume-icon');
+
+        bgAudio.volume = 0.5; // Inicia em 50%
+
+        volumeSlider.addEventListener('input', (e) => {
+            bgAudio.volume = e.target.value;
+            updateVolumeIcon(e.target.value);
+        });
+
+        let lastVolume = 0.5;
+        btnMute.addEventListener('click', () => {
+            if (bgAudio.volume > 0) {
+                lastVolume = bgAudio.volume;
+                bgAudio.volume = 0;
+                volumeSlider.value = 0;
+            } else {
+                bgAudio.volume = lastVolume || 0.5;
+                volumeSlider.value = bgAudio.volume;
+            }
+            updateVolumeIcon(bgAudio.volume);
+        });
+
+        function updateVolumeIcon(val) {
+            if (val == 0) {
+                volumeIcon.className = 'fa-solid fa-volume-xmark';
+            } else if (val < 0.4) {
+                volumeIcon.className = 'fa-solid fa-volume-low';
+            } else {
+                volumeIcon.className = 'fa-solid fa-volume-high';
+            }
+        }
+
+        /* ================= MOUSE & CURSOR PHYSICS ================= */
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+
+        window.addEventListener('pointermove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            document.documentElement.style.setProperty('--mouse-x', `${mouseX}px`);
+            document.documentElement.style.setProperty('--mouse-y', `${mouseY}px`);
+        });
+
+        const canvas = document.getElementById('cursor-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const points = [];
+        const numPoints = 15;
+        for (let i = 0; i < numPoints; i++) {
+            points.push({ x: mouseX, y: mouseY });
+        }
+
+        function drawCursor() {
+            ctx.clearRect(0, 0, width, height);
+
+            let currentX = mouseX;
+            let currentY = mouseY;
+
+            for (let i = 0; i < numPoints; i++) {
+                const pt = points[i];
+                pt.x += (currentX - pt.x) * 0.35;
+                pt.y += (currentY - pt.y) * 0.35;
+                currentX = pt.x;
+                currentY = pt.y;
+            }
+
+            // Thread
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            for (let i = 1; i < numPoints; i++) {
+                ctx.lineTo(points[i].x, points[i].y);
+            }
+            ctx.strokeStyle = 'rgba(224, 82, 124, 0.7)';
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = 'rgba(224, 82, 124, 1)';
+            ctx.stroke();
+
+            // Needle
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.moveTo(mouseX, mouseY);
+            ctx.lineTo(mouseX + 15, mouseY + 25);
+            ctx.lineTo(mouseX + 12, mouseY + 27);
+            ctx.lineTo(mouseX, mouseY);
+            ctx.fillStyle = '#cbd5e1'; 
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(mouseX + 12, mouseY + 22, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#000';
+            ctx.fill();
+
+            requestAnimationFrame(drawCursor);
+        }
+        drawCursor();
+
+        /* ================= DRAG KEY LOGIC ================= */
+        const keyEl = document.getElementById('draggable-key');
+        const lockEl = document.getElementById('keyhole');
+        const doorEl = document.getElementById('the-door');
+        const introWorld = document.getElementById('intro-world');
+        const magicalWorld = document.getElementById('magical-world');
+
+        let isDraggingKey = false;
+        let keyStartX, keyStartY;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+
+        keyEl.addEventListener('pointerdown', (e) => {
+            isDraggingKey = true;
+            keyStartX = e.clientX - currentTranslateX;
+            keyStartY = e.clientY - currentTranslateY;
+            keyEl.setPointerCapture(e.pointerId);
+            
+            initAudioAPI(); // Inicializa Audio Context com a interação do usuário
+            
+            if (bgAudio.src && bgAudio.paused) {
+                bgAudio.play().catch(err => console.log("Áudio bloqueado:", err));
+            }
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (!isDraggingKey) return;
+            currentTranslateX = e.clientX - keyStartX;
+            currentTranslateY = e.clientY - keyStartY;
+            keyEl.style.transform = `translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+            checkLockIntersection();
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            if (isDraggingKey) {
+                isDraggingKey = false;
+                keyEl.releasePointerCapture(e.pointerId);
+            }
+        });
+
+        function checkLockIntersection() {
+            const keyRect = keyEl.getBoundingClientRect();
+            const lockRect = lockEl.getBoundingClientRect();
+
+            const overlap = !(
+                keyRect.right < lockRect.left - 15 ||
+                keyRect.left > lockRect.right + 15 ||
+                keyRect.bottom < lockRect.top - 15 ||
+                keyRect.top > lockRect.bottom + 15
+            );
+
+            if (overlap) {
+                isDraggingKey = false;
+                keyEl.style.display = 'none';
+                openDoorAndTransition();
+            }
+        }
+
+        function openDoorAndTransition() {
+            doorEl.classList.add('door-open');
+            setTimeout(() => {
+                introWorld.style.opacity = '0';
+                introWorld.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    introWorld.style.display = 'none';
+                    magicalWorld.classList.add('active');
+                    volumeUI.classList.replace('opacity-0', 'opacity-100'); // Mostra controle de volume
+                }, 2000);
+            }, 800);
+        }
+
+        /* ================= CORALINE 3D ROTATE ================= */
+        const coralineWrapper = document.getElementById('coraline-wrapper');
+        let isRotating = false;
+        let rotationStartX = 0;
+        let currentRotationY = 0;
+        let lastRotationY = 0;
+
+        coralineWrapper.addEventListener('pointerdown', (e) => {
+            isRotating = true;
+            rotationStartX = e.clientX;
+            coralineWrapper.setPointerCapture(e.pointerId);
+            coralineWrapper.style.transition = 'none'; 
+        });
+
+        coralineWrapper.addEventListener('pointermove', (e) => {
+            if (!isRotating) return;
+            const deltaX = e.clientX - rotationStartX;
+            currentRotationY = lastRotationY + (deltaX * 0.7);
+            coralineWrapper.style.transform = `rotateY(${currentRotationY}deg)`;
+        });
+
+        coralineWrapper.addEventListener('pointerup', (e) => {
+            if (isRotating) {
+                isRotating = false;
+                lastRotationY = currentRotationY;
+                coralineWrapper.releasePointerCapture(e.pointerId);
+                coralineWrapper.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)'; 
+            }
+        });
+
+        /* ================= SEEING STONE LOGIC ================= */
+        const btnStone = document.getElementById('btn-stone');
+        const overlay = document.getElementById('seeing-stone-overlay');
+        const stoneUI = document.getElementById('stone-ui');
+        const eyeCountEl = document.getElementById('eye-count');
+        const eyesContainer = document.getElementById('eyes-container');
+        
+        let stoneActive = false;
+        let eyesCollected = 0;
+        const totalEyes = 3;
+        const eyesArray = [];
+
+        function generateEyes() {
+            eyesContainer.innerHTML = '';
+            for (let i = 0; i < totalEyes; i++) {
+                const eye = document.createElement('div');
+                eye.className = 'ghost-eye';
+                
+                let x, y;
+                do {
+                    x = 10 + Math.random() * 80; 
+                    y = 20 + Math.random() * 60; 
+                } while(x > 35 && x < 65 && y > 30 && y < 70); 
+                
+                eye.style.left = `${x}vw`;
+                eye.style.top = `${y}vh`;
+                
+                eye.addEventListener('pointerdown', () => collectEye(eye, i));
+                eyesContainer.appendChild(eye);
+                
+                eyesArray.push({
+                    element: eye,
+                    collected: false,
+                    getCenter: function() {
+                        const rect = this.element.getBoundingClientRect();
+                        return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+                    }
+                });
+            }
+        }
+        
+        btnStone.addEventListener('click', () => {
+            stoneActive = !stoneActive;
+            if (stoneActive) {
+                overlay.classList.add('active');
+                stoneUI.classList.remove('hidden');
+                btnStone.innerHTML = '<i class="fa-solid fa-eye-slash"></i> <span>Desligar</span>';
+                btnStone.classList.replace('bg-teal-900/90', 'bg-[#e0527c]/90');
+                btnStone.classList.replace('border-teal-500', 'border-[#e0527c]');
+                btnStone.classList.replace('text-teal-300', 'text-pink-100');
+                
+                if (eyesCollected >= totalEyes) {
+                    eyesCollected = 0;
+                    eyeCountEl.innerText = '0';
+                    eyesArray.length = 0;
+                    generateEyes();
+                } else if (eyesArray.length === 0) {
+                    generateEyes();
+                }
+            } else {
+                overlay.classList.remove('active');
+                stoneUI.classList.add('hidden');
+                btnStone.innerHTML = '<i class="fa-solid fa-eye"></i> <span>Pedra da Visão</span>';
+                btnStone.classList.replace('bg-[#e0527c]/90', 'bg-teal-900/90');
+                btnStone.classList.replace('border-[#e0527c]', 'border-teal-500');
+                btnStone.classList.replace('text-pink-100', 'text-teal-300');
+                
+                eyesArray.forEach(eyeObj => {
+                    if(!eyeObj.collected) eyeObj.element.style.opacity = 0;
+                });
+            }
+        });
+
+        setInterval(() => {
+            if (!stoneActive) return;
+            const revealRadius = 140; 
+            
+            eyesArray.forEach(eyeObj => {
+                if (eyeObj.collected) return;
+                const center = eyeObj.getCenter();
+                const dist = Math.hypot(center.x - mouseX, center.y - mouseY);
+                
+                if (dist < revealRadius) {
+                    eyeObj.element.style.opacity = 1;
+                } else {
+                    eyeObj.element.style.opacity = 0;
+                }
+            });
+        }, 50);
+
+        function collectEye(eyeElement, index) {
+            if (!stoneActive || eyesArray[index].collected) return;
+            
+            eyeElement.classList.add('collected');
+            eyesArray[index].collected = true;
+            
+            eyesCollected++;
+            eyeCountEl.innerText = eyesCollected;
+
+            if (eyesCollected >= totalEyes) {
+                playCelebrationSound(); // SFX Mágico!
+                setTimeout(showRomanticModal, 1000);
+            }
+        }
+
+        const modal = document.getElementById('romantic-modal');
+        const modalContent = document.getElementById('modal-content');
+
+        function showRomanticModal() {
+            if(stoneActive) btnStone.click(); 
+            modal.classList.remove('pointer-events-none');
+            modal.classList.replace('opacity-0', 'opacity-100');
+            modalContent.classList.replace('scale-95', 'scale-100');
+        }
+
+        window.closeModal = function() {
+            modal.classList.replace('opacity-100', 'opacity-0');
+            modalContent.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => {
+                modal.classList.add('pointer-events-none');
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

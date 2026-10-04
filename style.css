@@ -1,0 +1,191 @@
+   * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        :root {
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; 
+            margin: 0;
+            padding: 0;
+            background-color: #0b0b10;
+            touch-action: none;
+            cursor: none;
+        }
+
+        .font-title, .font-serif-elegant { font-family: 'Cinzel Decorative', serif; }
+
+        /* ================= INTRO WORLD ================= */
+        #intro-world {
+            background: linear-gradient(to bottom, #1a1a1a, #0b0b10);
+            filter: grayscale(100%);
+            transition: opacity 2s ease, transform 2s ease;
+        }
+
+        .wall-texture {
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 19px, #151515 20px),
+                              repeating-linear-gradient(90deg, transparent, transparent 39px, #151515 40px);
+            background-size: 40px 20px;
+            opacity: 0.8;
+        }
+
+        .small-door {
+            width: 150px;
+            height: 200px;
+            background: #2a1b0d;
+            border: 4px solid #1a1008;
+            border-radius: 75px 75px 0 0;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 0 10px 20px rgba(0,0,0,0.7);
+            transition: transform 1.5s ease-in-out;
+            transform-origin: left center;
+            perspective: 1000px;
+        }
+
+        .door-open {
+            transform: rotateY(-110deg);
+        }
+
+        .keyhole {
+            width: 12px;
+            height: 20px;
+            background: #000;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 50% 50% 0 0;
+            box-shadow: 0 0 5px rgba(255,255,255,0.05);
+        }
+        
+        .keyhole::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 10px;
+            background: #000;
+            clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
+        }
+
+        .key-draggable {
+            font-size: 3rem;
+            cursor: none;
+            position: absolute;
+            z-index: 10;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.8));
+            touch-action: none;
+            bottom: 40px;
+            right: 40px;
+        }
+
+        /* ================= MAGICAL WORLD ================= */
+        #magical-world {
+            background: radial-gradient(circle at center, #1e0b3b, #07030d);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+        }
+        
+        #magical-world.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .scene3d {
+            perspective: 1200px;
+            width: 250px;
+            height: 380px;
+            margin: 0 auto;
+            touch-action: none;
+        }
+        
+        .coraline-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        
+        .coraline-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none !important;
+            -webkit-user-drag: none !important;
+            border: none !important;
+            filter: drop-shadow(0 0 35px rgba(224, 82, 124, 0.4));
+        }
+
+        /* ================= SEEING STONE (LENTE) ================= */
+        #seeing-stone-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle 140px at var(--mouse-x) var(--mouse-y), transparent 0%, rgba(5,5,8,0.98) 100%);
+            z-index: 35;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        #seeing-stone-overlay.active { opacity: 1; }
+
+        .ghost-eye {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #fff, #4fd1c5);
+            border-radius: 50%;
+            box-shadow: 0 0 25px #14b8a6, inset 0 0 15px #0f766e;
+            z-index: 45;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ghost-eye::after {
+            content: '';
+            width: 6px;
+            height: 20px;
+            background: #000;
+            border-radius: 50%;
+        }
+        .ghost-eye.collected { 
+            transform: scale(2) rotate(180deg);
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        /* Input Range Custom Styling for Volume */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            background: #e0527c;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(224, 82, 124, 0.8);
+        }
+
+        #cursor-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
